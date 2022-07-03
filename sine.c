@@ -5,12 +5,32 @@
 int main()
 {
     double angle;
-    int numSteps = 20;
+    int numSteps;
     double maxAngle = M_PI * 2;
-    int i;
+    int i, j, numSpaces;
+    float sinVal;
 
-    for(i=1; i<numSteps; i++)
+    do
     {
-        printf("%3d: \n", i);
+        printf("Input the number of steps: ");
+        scanf("%d", &numSteps);
+    } while (numSteps < 2);
+
+    for (i = 0; i <= numSteps; i++)
+    {
+        angle = (double)i / (double)numSteps * maxAngle;
+        sinVal = sin(angle);
+        numSpaces = 30 + sinVal * 30;
+        printf("%3d: %5.2f ", i, angle);
+        for (j = 0; j < numSpaces; j++)
+        {
+            printf(" ");
+        }
+        if (fabs(cos(angle)) < 0.1)
+            printf("*\n");
+        else if (cos(angle) < 0)
+            printf("/\n");
+        else if (cos(angle) > 0)
+            printf("\\\n");
     }
 }
