@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     FILE *outFile;
     char line[120];
 
-    if(argc < 3)
+    if (argc < 3)
     {
         printf("Insufficient arguments\n");
         return 1;
@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 
     printf("Copy from file: %s\n", argv[1]);
     printf("Copy to file: %s\n", argv[2]);
-    
+
     inFile = fopen(argv[1], "r");
-    if(inFile == NULL)
+    if (inFile == NULL)
     {
         printf("Unable to open file %s\n", argv[1]);
         return 1;
@@ -32,13 +32,13 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    while(!feof(inFile))
+    while (!feof(inFile))
     {
         // Read a line of text from the file
         fgets(line, sizeof(line), inFile);
 
         // Remove the newline at the end of the line
-        if(strlen(line)>0)
+        if (strlen(line) > 0)
         {
             line[strlen(line) - 1] = '\0';
         }
