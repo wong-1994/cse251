@@ -19,13 +19,15 @@
 #define CaveSize 20
 #define ArraySize (CaveSize + 2)
 // Direction I can face
-#define left 0
-#define right 1
+#define Left 0
+#define Right 1
 
 /* Add any function prototypes here */
 void CreateWorld(int cave[]);
 int *GetEmptyRoom(int cave[]);
-void DisplayRoom(int cave[], int *agent, int agentDir);
+void DisplayWorld(int cave[], int *agent, int agentDir);
+int DifferenceByDirection(int dir);
+bool DisplayStatus(int cave[], int *agent);
 
  
 int main()
@@ -34,6 +36,8 @@ int main()
     int *agentRoom;
     int agentDirection;
     char command[20];
+    int direction;
+    int i;
     
     /* Seed the random number generator */
     srand(time(NULL));
@@ -44,7 +48,10 @@ int main()
 
     while (true)
     {
-        DisplayRoom(agentRoom, agentDirection);
+        if(DisplayStatus(cave, agentRoom))
+            break;
+
+        DisplayWorld(cave, agentRoom, agentDirection);
 
         // Get the command
         printf("Command: ");
@@ -54,6 +61,26 @@ int main()
         {
             // Exit, we are doing
             break;
+        }
+        else if(strcmp(command, "move") == 0)
+        {
+            // Move command
+            // What way do we need to go?
+            direction = DifferenceByDirection(agentDirection);
+            if(*(agentRoom + direction) != End)
+                agentRoom += direction;
+        }
+        else if(strcmp(command, "turn") == 0)
+        {
+            agentDirection = !agentDirection;
+        }
+        else if(strcmp(command, "fire") == 0)
+        {
+            for(i=1;i<4;i++)
+            {
+                direction = DifferenceByDirection(agentDirection);
+                if(*(agentRoom + i * direction) == Wumpus)
+            }
         }
         else
         {
@@ -100,8 +127,55 @@ void DisplayWorld(int cave[], int *agent, int agentDir)
 {
     int *room;
 
-    for(room = cave + 1: *room != End; room++)
+    for(room = cave + 1; *room != End; room++)
     {
-        
+       if(room == agent)
+       {
+            switch(agentDir)
+            {
+                case Left:
+                    printf("<A ");
+                    break;
+                case Right:
+                    printf("A> ");
+            }
+            
+            continue;
+       }
+
+       switch(*room)
+       {
+        case Wumpus:
+            printf("-W-");
+            break;
+        default:
+            printf(". ");
+            break;
+        } 
     }
+
+    printf("\n");
+}
+
+int DifferenceByDirection(int dir)
+{
+    if(dir == Left)
+        return -1;
+    else
+        return 1;
+}
+
+bool DisplayStatus(int cave[], int *agent)
+{
+    if(*agent == Wumpus)
+    {
+        printf("You have been eaten by the Wumpus\n");
+        return true;
+    }
+    if(*(agent -1) == Wumpus || *(agent + 1) == Wumpus)
+    {
+        printf("I smell a Wumpus\n");
+    }
+    // We will retrun true to indicate we are dead!
+    return false;
 }
