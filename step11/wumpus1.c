@@ -6,9 +6,9 @@
 
 /*
  * Name :  <insert name here>
- * 
+ *
  * Simple Wumpus game in 1D
-*/
+ */
 
 /* Add any #defines here */
 // Id's for things in our cave
@@ -29,7 +29,6 @@ void DisplayWorld(int cave[], int *agent, int agentDir);
 int DifferenceByDirection(int dir);
 bool DisplayStatus(int cave[], int *agent);
 
- 
 int main()
 {
     int cave[ArraySize];
@@ -38,17 +37,17 @@ int main()
     char command[20];
     int direction;
     int i;
-    
+
     /* Seed the random number generator */
     srand(time(NULL));
 
-    CreateWorld(cave);    
+    CreateWorld(cave);
     agentRoom = GetEmptyRoom(cave);
     agentDirection = rand() % 2;
 
     while (true)
     {
-        if(DisplayStatus(cave, agentRoom))
+        if (DisplayStatus(cave, agentRoom))
             break;
 
         DisplayWorld(cave, agentRoom, agentDirection);
@@ -57,29 +56,32 @@ int main()
         printf("Command: ");
         scanf("%20s", command);
 
-        if(strcmp(command, "quit") == 0)
+        if (strcmp(command, "quit") == 0)
         {
             // Exit, we are doing
             break;
         }
-        else if(strcmp(command, "move") == 0)
+        else if (strcmp(command, "move") == 0)
         {
             // Move command
             // What way do we need to go?
             direction = DifferenceByDirection(agentDirection);
-            if(*(agentRoom + direction) != End)
+            if (*(agentRoom + direction) != End)
                 agentRoom += direction;
         }
-        else if(strcmp(command, "turn") == 0)
+        else if (strcmp(command, "turn") == 0)
         {
             agentDirection = !agentDirection;
         }
-        else if(strcmp(command, "fire") == 0)
+        else if (strcmp(command, "fire") == 0)
         {
-            for(i=1;i<4;i++)
+            for (i = 1; i < 4; i++)
             {
                 direction = DifferenceByDirection(agentDirection);
-                if(*(agentRoom + i * direction) == Wumpus)
+                if (*(agentRoom + i * direction) == End)
+                    break;
+                else if (*(agentRoom + i * direction) == Wumpus)
+                    *(agentRoom + i * direction) = Empty;
             }
         }
         else
@@ -87,7 +89,6 @@ int main()
             printf("I don't know what you are talking about\n");
         }
     }
-    
 }
 
 void CreateWorld(int cave[])
@@ -96,7 +97,7 @@ void CreateWorld(int cave[])
     int *room;
 
     // Initialize cave to be empty
-    for(i = 0; i < ArraySize; i++)
+    for (i = 0; i < ArraySize; i++)
     {
         cave[i] = Empty;
     }
@@ -104,11 +105,10 @@ void CreateWorld(int cave[])
     // Set the ends
     cave[0] = End;
     cave[ArraySize - 1] = End;
-    
-    //Get a random empty room and put the Wumpus in it
+
+    // Get a random empty room and put the Wumpus in it
     room = GetEmptyRoom(cave);
     *room = Wumpus;
-
 }
 
 int *GetEmptyRoom(int cave[])
@@ -119,7 +119,7 @@ int *GetEmptyRoom(int cave[])
     {
         room = rand() % ArraySize;
     } while (cave[room] != Empty);
-    
+
     return &cave[room];
 }
 
@@ -127,31 +127,31 @@ void DisplayWorld(int cave[], int *agent, int agentDir)
 {
     int *room;
 
-    for(room = cave + 1; *room != End; room++)
+    for (room = cave + 1; *room != End; room++)
     {
-       if(room == agent)
-       {
-            switch(agentDir)
+        if (room == agent)
+        {
+            switch (agentDir)
             {
-                case Left:
-                    printf("<A ");
-                    break;
-                case Right:
-                    printf("A> ");
+            case Left:
+                printf("<A ");
+                break;
+            case Right:
+                printf("A> ");
             }
-            
-            continue;
-       }
 
-       switch(*room)
-       {
-        case Wumpus:
-            printf("-W-");
-            break;
+            continue;
+        }
+
+        switch (*room)
+        {
+        // case Wumpus:
+        // printf("-W-");
+        // break;
         default:
             printf(". ");
             break;
-        } 
+        }
     }
 
     printf("\n");
@@ -159,7 +159,7 @@ void DisplayWorld(int cave[], int *agent, int agentDir)
 
 int DifferenceByDirection(int dir)
 {
-    if(dir == Left)
+    if (dir == Left)
         return -1;
     else
         return 1;
@@ -167,14 +167,66 @@ int DifferenceByDirection(int dir)
 
 bool DisplayStatus(int cave[], int *agent)
 {
-    if(*agent == Wumpus)
+    bool wumpus_dead = true;
+    int *room = cave;
+
+    if (*agent == Wumpus)
     {
         printf("You have been eaten by the Wumpus\n");
         return true;
     }
-    if(*(agent -1) == Wumpus || *(agent + 1) == Wumpus)
+    if (*(agent - 1) == Wumpus || *(agent + 1) == Wumpus)
     {
         printf("I smell a Wumpus\n");
+    }
+    for (room = cave + 1; *room != End; room++)
+    {
+        if (*room == Wumpus)
+        {
+            wumpus_dead = false;
+            break;
+        }
+    }
+    if (wumpus_dead)
+    {
+        printf("The Wumpus is dead! You Won!!!\n");
+        return true;
+    }
+    // We will retrun true to indicate we are dead!
+    return false;
+}
+
+bool DisplayStatus(int cave[ArraySize][ArraySize], int *agent)
+{
+    bool wumpus_dead = true;
+    int row, col;
+
+    if (*agent == Wumpus)
+    {
+        printf("You have been eaten by the Wumpus\n");
+        return true;
+    }
+    if (*(agent - 1) == Wumpus || *(agent + 1) == Wumpus || *(agent - ArraySize) == Wumpus || *(agent + ArraySize) == Wumpus)
+    {
+        printf("I smell a Wumpus\n");
+    }
+    for (row = 1; row < ArraySize - 1; row++)
+    {
+        for (col = 1; col < ArraySize - 1; col++)
+        {
+            if (cave[row][col] == Wumpus)
+            {
+                wumpus_dead = false;
+                break;
+            }
+        }
+        if (!wumpus_dead)
+            break;
+    }
+    if (wumpus_dead)
+    {
+        printf("The Wumpus is dead! You Won!!!\n");
+        return true;
     }
     // We will retrun true to indicate we are dead!
     return false;
