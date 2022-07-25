@@ -30,6 +30,7 @@ void CreateWorld(int cave[ArraySize][ArraySize]);
 int *GetEmptyRoom(int cave[ArraySize][ArraySize]);
 void DisplayWorld(int cave[ArraySize][ArraySize], int *agent, int agentDir);
 int DifferenceByDirection(int dir);
+bool DisplayStatus(int cave[ArraySize][ArraySize], int *agent);
 
 int main()
 {
@@ -49,6 +50,8 @@ int main()
     /* The game loop */
     while (true)
     {
+        if(DisplayStatus(cave, agentRoom))
+            break;
         DisplayWorld(cave, agentRoom, agentDirection);
         /* Get the command */
         printf("Command: ");
@@ -72,6 +75,21 @@ int main()
         }
         else if (strcmp(command, "fire") == 0)
         {
+            int i = 1;
+
+            for(i=1;i<4;i++)
+            {
+                d = DifferenceByDirection(agentDirection);
+                if(*(agentRoom + i * d)==End)
+                {
+                    break;
+                }
+                else if(*(agentRoom + i * d) == Wumpus)
+                {   
+                    *(agentRoom + i * d) = Empty;
+                    break;
+                }
+            }
         }
         else
         {
@@ -84,6 +102,7 @@ void CreateWorld(int cave[ArraySize][ArraySize])
 {
     int i, j;
     int *room;
+    int c;
 
     for (i = 0; i < ArraySize; i++)
     {
@@ -101,6 +120,11 @@ void CreateWorld(int cave[ArraySize][ArraySize])
     }
     room = GetEmptyRoom(cave);
     *room = Wumpus;
+    for(c = 0; c < 10; c++)
+    {
+        room = GetEmptyRoom(cave);
+        *room = Pit;
+    }
 }
 
 int *GetEmptyRoom(int cave[ArraySize][ArraySize])
@@ -184,6 +208,10 @@ void DisplayWorld(int cave[ArraySize][ArraySize], int *agent, int agentDir)
                 printf("-W- ");
                 break;
 
+            case Pit:
+                printf("~O~ ");
+                break;
+
             default:
                 printf(" .  ");
                 break;
@@ -210,4 +238,49 @@ int DifferenceByDirection(int dir)
     case Right:
         return 1;
     }
+}
+
+bool DisplayStatus(int cave[ArraySize][ArraySize], int *agent)
+{
+    bool wumpus_dead = true;
+    int row, col;
+
+    if (*agent == Wumpus)
+    {
+        printf("You have been eaten by the Wumpus\n");
+        return true;
+    }
+    if(*agent == Pit)
+    {
+        printf("You fell into a pit\n");
+        return true;
+    }
+    if (*(agent - 1) == Wumpus || *(agent + 1) == Wumpus || *(agent - ArraySize) == Wumpus || *(agent + ArraySize) == Wumpus)
+    {
+        printf("I smell a Wumpus\n");
+    }
+    if (*(agent - 1) == Pit || *(agent + 1) == Pit || *(agent - ArraySize) == Pit || *(agent + ArraySize) == Pit)
+    {
+        printf("I feel a draft\n");
+    }
+    for (row = 1; row < ArraySize - 1; row++)
+    {
+        for (col = 1; col < ArraySize - 1; col++)
+        {
+            if (cave[row][col] == Wumpus)
+            {
+                wumpus_dead = false;
+                break;
+            }
+        }
+        if (!wumpus_dead)
+            break;
+    }
+    if (wumpus_dead)
+    {
+        printf("The Wumpus is dead! You Won!!!\n");
+        // return true;
+    }
+    // We will retrun true to indicate we are dead!
+    return false;
 }
