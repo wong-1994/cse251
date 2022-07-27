@@ -196,38 +196,3 @@ bool DisplayStatus(int cave[], int *agent)
     return false;
 }
 
-bool DisplayStatus(int cave[ArraySize][ArraySize], int *agent)
-{
-    bool wumpus_dead = true;
-    int row, col;
-
-    if (*agent == Wumpus)
-    {
-        printf("You have been eaten by the Wumpus\n");
-        return true;
-    }
-    if (*(agent - 1) == Wumpus || *(agent + 1) == Wumpus || *(agent - ArraySize) == Wumpus || *(agent + ArraySize) == Wumpus)
-    {
-        printf("I smell a Wumpus\n");
-    }
-    for (row = 1; row < ArraySize - 1; row++)
-    {
-        for (col = 1; col < ArraySize - 1; col++)
-        {
-            if (cave[row][col] == Wumpus)
-            {
-                wumpus_dead = false;
-                break;
-            }
-        }
-        if (!wumpus_dead)
-            break;
-    }
-    if (wumpus_dead)
-    {
-        printf("The Wumpus is dead! You Won!!!\n");
-        return true;
-    }
-    // We will retrun true to indicate we are dead!
-    return false;
-}
