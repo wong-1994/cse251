@@ -23,5 +23,10 @@ struct Transistor
 
 void DisplayTransistor(struct Transistor tran);
 struct Transistor InputTransistor();
+void InputString(char *str, int max);
+double InputPositiveValue(char *prompt);
+int InputTransistorType(char *prompt);
+double InputPositiveValue(char *prompt);
+int InputCaseStyle(char *prompt);
 
 #endif
