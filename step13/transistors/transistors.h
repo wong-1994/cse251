@@ -12,21 +12,22 @@
 #define TO220 4
 #define TO39 5
 
-struct Transistor
+typedef struct Transistor
 {
     char number[10];
-    int type;       /* NPN, PNP, etc. */
-    int caseStyle;  /* TO18, etc. */
-    double pmax;    /* Maximum power dissipation watts */
-    double icmax;   /* Maximum collector current amps */
-};
+    int type;      /* NPN, PNP, etc. */
+    int caseStyle; /* TO18, etc. */
+    double pmax;   /* Maximum power dissipation watts */
+    double icmax;  /* Maximum collector current amps */
+} Tran;
 
-void DisplayTransistor(struct Transistor tran);
-struct Transistor InputTransistor();
+void DisplayTransistor(Tran tran);
+Tran InputTransistor();
 void InputString(char *str, int max);
 double InputPositiveValue(char *prompt);
 int InputTransistorType(char *prompt);
 double InputPositiveValue(char *prompt);
 int InputCaseStyle(char *prompt);
+bool InputAddTran();
 
 #endif
