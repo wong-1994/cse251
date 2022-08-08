@@ -10,16 +10,15 @@ int main()
     DisplayOption();
 
     option = InputOption();
-    printf("%d", option);
-    // switch (option)
-    // {
-    // case 1:
-    //     InputEvent();
-    //     break;
-    // case 0:
-    //     return 0;
+    switch (option)
+    {
+    case 1:
+        InputEvent();
+        break;
+    case 0:
+        return 0;
     
-    // default:
-    //     break;
-    // } 
+    default:
+        break;
+    } 
 }
