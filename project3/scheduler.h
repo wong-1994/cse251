@@ -9,6 +9,11 @@ typedef struct Event
   time_t end;
 } Event;
 
+typedef struct Schedule
+{
+  Event *events;
+  int numEvents;
+} Schedule;
 // struct tm
 // {
 //   int tm_sec;   /* Seconds.	[0-60] (1 leap second) */
@@ -23,6 +28,8 @@ typedef struct Event
 // };
 
 void DisplayOption();
+void DisplayEvent(Event *evt);
+void DisplayEvents(Schedule *schedule);
 int InputOption();
 Event InputEvent();
 void InputString(char *str, int max, char *prompt);

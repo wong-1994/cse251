@@ -5,16 +5,6 @@
 
 #include "scheduler.h"
 
-void DisplayOption()
-{
-    printf("1 - Insert a new event\n");
-    printf("2 - Display all events\n");
-    printf("3 - Now?\n");
-    printf("4 - Delete expired\n");
-    printf("0 - Exit\n");
-    printf("Please select an option: ");
-}
-
 int InputOption()
 {
     char buffer[100];
@@ -30,7 +20,7 @@ int InputOption()
             buffer[strlen(buffer) - 1] = '\0';
 
         sscanf(buffer, "%d", &value);
-    } while (!(value > 0 && value < 4));
+    } while (!(value >= 0 && value < 4));
 
     return value;
 }
