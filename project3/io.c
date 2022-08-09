@@ -35,9 +35,34 @@ int InputOption()
     return value;
 }
 
-Event InputEvent(char *prompt)
+Event InputEvent()
 {
-    
+    Event evt;
+
+    InputString(evt.event, sizeof(evt.event), "What is the event: ");
+    evt.date = InputDate("Event date: ");
+    evt.start = InputTime("Start time: ", evt.date);
+    evt.end = InputTime("End time: ", evt.date);
+}
+
+// void DisplayEvent()
+
+void InputString(char *str, int max, char *prompt)
+{
+    char buffer[100];
+
+    printf("%s", prompt);
+
+    fgets(buffer, sizeof(buffer), stdin);
+
+    while (buffer[0] == '\n')
+        fgets(buffer, sizeof(buffer), stdin);
+
+    if (strlen(buffer) > 0)
+        buffer[strlen(buffer) - 1] = '\0';
+
+    strncpy(str, buffer, max);
+    str[max - 1] = '\0';
 }
 
 time_t InputDate(char *prompt)
@@ -53,15 +78,15 @@ time_t InputDate(char *prompt)
         // Get a line of up to 100 characters
         fgets(buffer, sizeof(buffer), stdin);
 
-        // Remove any \n we might have input 
-        if(strlen(buffer)>0)
+        // Remove any \n we might have input
+        if (strlen(buffer) > 0)
         {
-            buffer[strlen(buffer)-1] = '\0';
+            buffer[strlen(buffer) - 1] = '\0';
         }
 
         result = strptime(buffer, "%m/%d/%Y", &date);
-    
-    } while (result==NULL);
+
+    } while (result == NULL);
 
     // Convert to time_t format
     date.tm_min = 0;
@@ -79,16 +104,16 @@ time_t InputTime(char *prompt, time_t date)
     struct tm time;
 
     time = *localtime(&date);
-    
+
     printf("%s", prompt);
 
     do
     {
         fgets(buffer, sizeof(buffer), stdin);
 
-        if(strlen(buffer)>0)
+        if (strlen(buffer) > 0)
         {
-            buffer[strlen(buffer)-1] = '\0';
+            buffer[strlen(buffer) - 1] = '\0';
         }
 
         result = strptime(buffer, "%I:%M%p", &time);
@@ -96,5 +121,4 @@ time_t InputTime(char *prompt, time_t date)
     } while (result == NULL);
 
     return mktime(&time);
-    
 }
