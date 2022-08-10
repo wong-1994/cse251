@@ -20,7 +20,7 @@ void DisplayEvent(Event *evt)
     struct tm dateTM;
 
     dateTM = *localtime(&(evt->date));
-    printf("%d/%d/%d\t", dateTM.tm_mon-1, dateTM.tm_mday-1, (dateTM.tm_year+1900));
+    printf("%d/%d/%d\t", dateTM.tm_mon+1, dateTM.tm_mday, (dateTM.tm_year+1900));
     printf("\n");
 }
 

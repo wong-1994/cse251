@@ -25,14 +25,18 @@ int InputOption()
     return value;
 }
 
-Event InputEvent()
+Event InputEvent(Event evt)
 {
-    Event evt;
+    struct tm testTM;
 
     InputString(evt.event, sizeof(evt.event), "What is the event: ");
     evt.date = InputDate("Event date: ");
+    testTM = *localtime(&(evt.date));
+    printf("%d/%d/%d\n", testTM.tm_mon+1, testTM.tm_mday, (testTM.tm_year+1900));
     evt.start = InputTime("Start time: ", evt.date);
     evt.end = InputTime("End time: ", evt.date);
+
+    return evt;
 }
 
 // void DisplayEvent()
@@ -60,6 +64,8 @@ time_t InputDate(char *prompt)
     char buffer[100];
     char *result;
     struct tm date;
+    struct tm test2;
+    time_t test;
 
     do
     {
@@ -83,6 +89,20 @@ time_t InputDate(char *prompt)
     date.tm_hour = 0;
     date.tm_sec = 0;
     date.tm_isdst = 1;
+
+    printf("%d\n", date.tm_mon+1);
+    printf("%d\n", date.tm_mday);
+    printf("%d\n", date.tm_year+1900);
+
+    test = mktime(&date);
+    printf("%ld", test);
+    printf("%s", ctime(&test));
+
+    test2 = *localtime(&test);
+
+    printf("%d\n", test2.tm_mon+1);
+    printf("%d\n", test2.tm_mday);
+    printf("%d\n", test2.tm_year+1900);
 
     return mktime(&date);
 }

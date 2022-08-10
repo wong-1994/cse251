@@ -31,7 +31,7 @@ void DisplayOption();
 void DisplayEvent(Event *evt);
 void DisplayEvents(Schedule *schedule);
 int InputOption();
-Event InputEvent();
+Event InputEvent(Event evt);
 void InputString(char *str, int max, char *prompt);
 time_t InputDate(char *prompt);
 time_t InputTime(char *prompt, time_t date);

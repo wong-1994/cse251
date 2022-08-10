@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define __USE_XOPEN
+#include <time.h>
+
 #include "scheduler.h"
 
 int main()
@@ -10,8 +13,11 @@ int main()
     int i;
     int j;
     bool firstEvent = true;
-    Schedule schedule;
+    Schedule *schedule;
     Event event;
+
+    schedule = malloc(sizeof(Schedule));
+
 
     while(true)
     {
@@ -22,26 +28,26 @@ int main()
         {
             if(firstEvent)
             {
-                schedule.events = malloc(sizeof(Event));
-                schedule.events[0] = InputEvent();
-                schedule.numEvents = 1;
+                schedule->events = malloc(sizeof(Event));
+                schedule->events[0] = InputEvent(schedule->events[0]);
+                schedule->numEvents = 1;
                 firstEvent = false;
             }
             else
             {
-                schedule.events = realloc(schedule.events, sizeof(schedule));
-                event = InputEvent();
-                for(i=schedule.numEvents-1; schedule.events[i].start<event.start; i--)
+                schedule->events = realloc(schedule->events, sizeof(schedule) * (schedule->numEvents));
+                event = InputEvent(event);
+                for(i=schedule->numEvents-1; schedule->events[i].start<event.start; i--)
                 {
-                    schedule.events[i+1] = schedule.events[i]; 
+                    schedule->events[i+1] = schedule->events[i]; 
                 }
-                schedule.events[i] = event;
-                schedule.numEvents ++; 
+                schedule->events[i] = event;
+                schedule->numEvents ++; 
             }
         }
         else if(option == 2)
         {
-            DisplayEvents(&schedule);
+            DisplayEvents(schedule);
         }
         else if(option == 0)
         {
@@ -49,5 +55,5 @@ int main()
         }
     }
 
-    free(schedule.events);
+    free(schedule->events);
 }
